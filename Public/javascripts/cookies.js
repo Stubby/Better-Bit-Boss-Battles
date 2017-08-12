@@ -1,74 +1,38 @@
-var cookies = [];
+window._cookies = {};
 
-function parseCookies () {
-    
-    var all = document.cookie;
-    
-    if (all == "")
-    {
-        return;
-    }
-    
-    var list = all.split('; ');
-    
-    for (var i = 0; i < list.length; i++)
-    {
-        cookies[i] = list[i].split('=');
-    }
+// Get all existing cookies when the DOM loads.
+parse_cookies = function() {
+  var all_cookies = document.cookie.split('; '),
+      _cookies = {};
+
+  all_cookies.map(function(pairs) {
+    pair = pairs.split('=');
+
+    _cookies[pair[0]] = pair[1];
+  });
+
+  window._cookies = _cookies;
 }
 
-function getCookie (name, defaultVal) {
-    
-    for (var i = 0; i < cookies.length; i++)
-    {
-        if (cookies[i][0] == name)
-        {
-            return cookies[i][1];
-        }
-    }
-    
-    return defaultVal;
+// Set cookies during the session.
+set_cookie = function(name, value, expiration_in_days) {
+  var expiration_date = new Date();
+
+  expiration_date.setDate(expiration_date.getDate + expiration_in_days);
+
+  window._cookies[name] = value;
+  document.cookie = name + "=" + escape(value) + ";expires=" + expiration_date.toGMTString();
 }
 
-function setCookie (name, newValue, expiry, path) {
-    
-	if (!expiry)
-	{
-		expiry = new Date();
-	}
-	
-    for (var i = 0; i < cookies.length; i++)
-    {
-        if (cookies[i][0] == name)
-        {
-            cookies[i][1] = newValue.toString();
-            var expiryDate = (new Date(Date.UTC()+expiry));
-            expiry.setMonth(expiry.getMonth()+1);
-            document.cookie = name+"="+newValue.toString()+"; expires="+expiry.toUTCString()+"; path="+(path ? path : "/");
-            return;
-        }
-    }
-    
-    var newCookie = [name, newValue.toString()];
-    cookies.push(newCookie);
-    var expiry = new Date();
-    expiry.setMonth(expiry.getMonth()+1);
-    document.cookie = name+"="+newValue.toString()+"; expires="+expiry.toUTCString()+"; path="+(path ? path : "/");
+// Delete cookies during the session.
+delete_cookie = function(name) {
+  delete(window._cookies[name]);
+  set_cookie(name, "null", -500);
 }
 
-function deleteCookie(name, path) {
-	
-	var newCookies = [];
-	
-	for (var i = 0; i < cookies.length; i++)
-	{
-		if (cookies[i][0] != name)
-		{
-			newCookies.push (cookies[i]);
-		}
-	}
-	
-	cookies = newCookies;
-	
-	document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT; path="+(path ? path : "/");
-}
+
+(function($){
+  $('document').ready(function() {
+    parse_cookies();
+  });
+})(jQuery);
