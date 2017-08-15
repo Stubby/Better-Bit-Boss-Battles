@@ -15,7 +15,7 @@ parse_cookies = function() {
 }
 
 // Set cookies during the session.
-set_cookie = function(name, value, expiration_in_days) {
+set_cookie = function(name, value, expiration_in_days, path) {
   var expiration_date = new Date();
 
   expiration_date.setDate(expiration_date.getDate + expiration_in_days);
@@ -27,7 +27,7 @@ set_cookie = function(name, value, expiration_in_days) {
 // Delete cookies during the session.
 delete_cookie = function(name) {
   delete(window._cookies[name]);
-  set_cookie(name, "null", -500);
+  set_cookie(name, null, -500);
 }
 
 

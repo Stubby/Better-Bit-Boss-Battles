@@ -1,54 +1,49 @@
 $(document).ready(function() {
-    
-    parseCookies();
-    
-    if (getCookie("sound", "") == "true") { $("#sound").prop("checked", true); }
-    if (getCookie("trans", "") == "true") { $("#trans").prop("checked", true); }
-    if (getCookie("chroma", "") == "true") { $("#chroma").prop("checked", true); }
-    if (getCookie("persistent", "") == "true") { $("#persistent").prop("checked", true); }
-    if (getCookie("bossheal", "") == "true") { $("#bossheal").prop("checked", true); }
-    
-    if (getCookie("hptype", "overkill") == "constant")
-    {
+
+    parse_cookies();
+
+    $("#sound").prop("checked", (window._cookies.sound == "true"));
+    $("#trans").prop("checked", (window._cookies.trans == "true"));
+    $("#chroma").prop("checked", (window._cookies.chroma == "true") );
+    $("#persistent").prop("checked", (window._cookies.persistent == "true"));
+    $("#bossheal").prop("checked", (window._cookies.bossheal == "true"));
+
+    if (window._cookies.hptype == "constant") {
         $("input[type='radio'][name='hp'][value='constant']").click();
-        
         $("#hp-amnt").prop("disabled", false);
         $("#hp-init").prop("disabled", true);
         $("#hp-mult").prop("disabled", true);
     }
-    
-    if (getCookie("hpmult", "") != "") { $("#hp-mult").val(parseInt(getCookie("hpmult", "")) || 1) }
-    if (getCookie("hpinit", "") != "") { $("#hp-init").val(parseInt(getCookie("hpinit", "")) || 1000) }
-    if (getCookie("hpamnt", "") != "") { $("#hp-amnt").val(parseInt(getCookie("hpamnt", "")) || 1000) }
-    
+
+    if (window._cookies.hpmult != "") { $("#hp-mult").val(parseInt(window._cookies.hpmult) || 1) }
+    if (window._cookies.hpinit != "") { $("#hp-init").val(parseInt(window._cookies.hpinit) || 1000) }
+    if (window._cookies.hpamnt != "") { $("#hp-amnt").val(parseInt(window._cookies.hpamnt) || 1000) }
+
+
+    // FIXME - These can all function on the same event rather than 5 individual methods.
     $("#sound").click(function() {
-        
-        setCookie("sound", $(this).prop("checked").toString());
+        set_cookie("sound", $(this).prop("checked").toString(), 5000, "/");
     });
-    
+
     $("#trans").click(function() {
-        
-        setCookie("trans", $(this).prop("checked").toString());
+        set_cookie("trans", $(this).prop("checked").toString(), 5000, "/");
     });
-    
+
     $("#chroma").click(function() {
-        
-        setCookie("chroma", $(this).prop("checked").toString());
+        set_cookie("chroma", $(this).prop("checked").toString(), 5000, "/");
     });
-    
+
     $("#persistent").click(function() {
-        
-        setCookie("persistent", $(this).prop("checked").toString());
+        set_cookie("persistent", $(this).prop("checked").toString(), 5000, "/");
     });
-    
+
     $("#bossheal").click(function() {
-        
-        setCookie("bossheal", $(this).prop("checked").toString());
+        set_cookie("bossheal", $(this).prop("checked").toString(), 5000, "/");
     });
-    
+
     $("input[type='radio'][name='hp']").change(function() {
-        
-        setCookie("hptype", $(this).val());
+
+        set_cookie("hptype", $(this).val(), 5000, "/");
         if ($(this).val() == "overkill")
         {
             $("#hp-mult").prop("disabled", false);
@@ -62,19 +57,16 @@ $(document).ready(function() {
             $("#hp-mult").prop("disabled", true);
         }
     });
-    
+
     $("#hp-mult").change(function() {
-        
-        setCookie("hpmult", $(this).val().toString());
+        set_cookie("hpmult", $(this).val().toString(), 5000, "/");
     });
-    
+
     $("#hp-init").change(function() {
-        
-        setCookie("hpinit", $(this).val().toString());
+        set_cookie("hpinit", $(this).val().toString(), 5000, "/");
     });
-    
+
     $("#hp-amnt").change(function() {
-        
-        setCookie("hpamnt", $(this).val().toString());
+        set_cookie("hpamnt", $(this).val().toString(), 5000, "/");
     });
 });
