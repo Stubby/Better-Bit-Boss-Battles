@@ -44,6 +44,7 @@ $(document).ready(function() {
     $("input[type='radio'][name='hp']").change(function() {
 
         set_cookie("hptype", $(this).val(), 5000, "/");
+
         if ($(this).val() == "overkill")
         {
             $("#hp-mult").prop("disabled", false);

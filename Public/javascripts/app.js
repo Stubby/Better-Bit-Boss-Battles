@@ -102,29 +102,26 @@ $(document).ready(function () {
     // Heal
     var heal = "http://i.imgur.com/fOvRfRk.gif";
 
-    parseCookies();
-
-    if (GetUrlParameter("token") != null)
+    if (window._queries.token != null)
     {
-        oauth = GetUrlParameter("token");
-        sound = (GetUrlParameter("sound") == "true");
-        if (GetUrlParameter("trans") == "true") { $(".allcontainer").css("background-color", "rgba(0,0,0,0)"); }
-        if (GetUrlParameter("chroma") == "true") { $(".allcontainer").css("background-color", "#00f"); }
+        oauth = window._queries.token;
+        sound = (window._queries.sound == "true");
+        if (window._queries.trans == "true") { $(".allcontainer").css("background-color", "rgba(0,0,0,0)"); }
+        if (window._queries.chroma == "true") { $(".allcontainer").css("background-color", "#00f"); }
 
-        hpType = GetUrlParameter("hptype") || hpType;
-        hpMult = parseInt(GetUrlParameter("hpmult")) || hpMult;
-        hpAmnt = (hpType == "overkill" ? parseInt(GetUrlParameter("hpinit")) || hpAmnt : parseInt(GetUrlParameter("hpamnt")) || hpAmnt);
+        hpType = window._queries.hptype || hpType;
+        hpMult = parseInt(window._queries.hpmult) || hpMult;
+        hpAmnt = (hpType == "overkill" ? parseInt(window._queries.hpinit) || hpAmnt : parseInt(window._queries.hpamnt) || hpAmnt);
 
-        bossHeal = (GetUrlParameter("bossheal") == "true");
+        bossHeal = (window._queries.bossheal == "true");
 
-        if (GetUrlParameter("persistent") != "true" || GetUrlParameter("reset") == "true")
-        {
-            setCookie("currentBoss", "");
-            setCookie("currentHp", "0");
-            setCookie("auth", "");
-            setCookie("sound", "");
-            setCookie("trans", "");
-            setCookie("chroma", "");
+        if (window._queries.persistent != "true" || window._queries.reset == "true") {
+            set_cookie("currentBoss",   "");
+            set_cookie("currentHp",     "0");
+            set_cookie("auth",          "");
+            set_cookie("sound",         "");
+            set_cookie("trans",         "");
+            set_cookie("chroma",        "");
         }
     }
     else
@@ -134,20 +131,20 @@ $(document).ready(function () {
         if (getCookie("trans", "") == "true") { $(".allcontainer").css("background-color", "rgba(0,0,0,0)"); }
         if (getCookie("chroma", "") == "true") { $(".allcontainer").css("background-color", "#00f"); }
 
-        hpType = getCookie("hptype", "overkill");
-        hpMult = parseInt(getCookie("hpmult", "1"));
-        hpAmnt = (hpType == "overkill" ? parseInt(getCookie("hpinit", "") || hpAmnt) : parseInt(getCookie("hpamnt", "")) || hpAmnt);
+        hpType = window._cookies.hptype;
+        hpMult = parseInt(window._cookies.hpmult);
+        hpAmnt = (hpType == "overkill" ? parseInt(window._cookies.hpinit || hpAmnt) : parseInt(window._cookies.hpamnt) || hpAmnt);
 
-        bossHeal = (getCookie("bossheal", "") == "true");
+        bossHeal = (window._cookies.bossheal == "true");
 
-        if (getCookie("persistent", "false") != "true")
+        if (window._cookies.persistent != "true")
         {
-            setCookie("currentBoss", "");
-            setCookie("currentHp", "0");
+            set_cookie("currentBoss", "");
+            set_cookie("currentHp", "0");
         }
     }
 
-    var cookieHp = parseInt(getCookie("maxHp", "0"));
+    var cookieHp = parseInt(window._cookies.maxHp);
 
     if (cookieHp != 0)
     {
@@ -164,13 +161,13 @@ $(document).ready(function () {
 
             if (event.data == "refreshsettings")
             {
-                parseCookies(); sound = (getCookie("sound", "") == "true");
+                sound = (window._cookies.sound == "true");
             }
         }
     }
 
-    nextBoss = getCookie("currentBoss", "");
-    prevHp = Math.min(parseInt(getCookie("currentHp", "0")), hpAmnt);
+    nextBoss = window._cookies.currentBoss;
+    prevHp = Math.min(parseInt(window._cookies.currentHp);
 
     $.ajax({
         url: "https://api.twitch.tv/kraken/user",
@@ -180,7 +177,7 @@ $(document).ready(function () {
 
             channelId = data._id;
 
-            if (nextBoss == "") { nextBoss = data.name; setCookie("currentBoss", nextBoss); }
+            if (nextBoss == "") { nextBoss = data.name; set_cookie("currentBoss", nextBoss); }
 
             Connect("wss://pubsub-edge.twitch.tv", function() {
 
@@ -250,7 +247,7 @@ $(document).ready(function () {
             if (imgRemove != null) { clearTimeout(imgRemove); }
 
             loss -= amount;
-            setCookie("currentHp", Math.min(hp - loss, hpAmnt).toString());
+            set_cookie("currentHp", Math.min(hp - loss, hpAmnt).toString());
 
             isDelayed = true;
 
@@ -307,22 +304,22 @@ $(document).ready(function () {
                 nextBoss = attacker;
                 counter.html("Final Blow: " + display);
 
-                setCookie("currentBoss", nextBoss);
+                set_cookie("currentBoss", nextBoss);
 
                 if (hpType == "overkill")
                 {
-                    setCookie("currentHp", (overkill * hpMult < 100 ? 100 : overkill * hpMult));
-                    setCookie("maxHp", (overkill * hpMult < 100 ? 100 : overkill * hpMult));
+                    set_cookie("currentHp", (overkill * hpMult < 100 ? 100 : overkill * hpMult));
+                    set_cookie("maxHp", (overkill * hpMult < 100 ? 100 : overkill * hpMult));
                 }
                 else
                 {
-                    setCookie("currentHp", hpAmnt.toString());
-                    setCookie("maxHp", hpAmnt.toString());
+                    set_cookie("currentHp", hpAmnt.toString());
+                    set_cookie("maxHp", hpAmnt.toString());
                 }
             }
             else
             {
-                setCookie("currentHp", (hp - loss).toString());
+                set_cookie("currentHp", (hp - loss).toString());
             }
 
             isDelayed = true;
@@ -511,6 +508,7 @@ $(document).ready(function () {
 
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
+
 
     function GetUrlParameter(sParam) {
 
